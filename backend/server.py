@@ -416,20 +416,20 @@ async def delete_route(route_id: str):
 
 # ============== DELIVERY MANAGEMENT ==============
 
-@api_router.get("/deliveries", response_model=List[dict])
+@api_router.get("/deliveries")
 async def get_deliveries(status: Optional[str] = None):
     query = {}
     if status:
         query['status'] = status
     deliveries = await db.deliveries.find(query).sort("created_at", -1).to_list(100)
-    return deliveries
+    return [serialize_doc(d) for d in deliveries]
 
 @api_router.get("/deliveries/{delivery_id}")
 async def get_delivery(delivery_id: str):
     delivery = await db.deliveries.find_one({"id": delivery_id})
     if not delivery:
         raise HTTPException(status_code=404, detail="Livraison non trouvée")
-    return delivery
+    return serialize_doc(delivery)
 
 @api_router.post("/deliveries", response_model=dict)
 async def create_delivery(delivery: DeliveryCreate):
