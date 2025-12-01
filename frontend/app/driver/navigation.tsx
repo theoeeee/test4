@@ -13,9 +13,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
-import { WebView } from 'react-native-webview';
 import api from '../../src/services/api';
 import { useAuth } from '../../src/context/AuthContext';
+
+// Conditionally import WebView only for native platforms
+let WebView: any = null;
+if (Platform.OS !== 'web') {
+  WebView = require('react-native-webview').WebView;
+}
 
 const { width, height } = Dimensions.get('window');
 
