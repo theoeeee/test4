@@ -669,15 +669,15 @@ async def resolve_alert(alert_id: str):
 
 # ============== CAMERAS (Simulated) ==============
 
-@api_router.get("/cameras", response_model=List[dict])
+@api_router.get("/cameras")
 async def get_cameras():
     cameras = await db.cameras.find({"is_active": True}).to_list(100)
     if not cameras:
         # Insert demo cameras
         for cam in DEMO_CAMERAS:
             await db.cameras.insert_one(cam)
-        cameras = DEMO_CAMERAS
-    return cameras
+        return DEMO_CAMERAS
+    return [serialize_doc(c) for c in cameras]
 
 @api_router.get("/cameras/nearest")
 async def get_nearest_camera(lat: float, lng: float):
