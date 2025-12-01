@@ -175,6 +175,12 @@ export default function Navigation() {
     }
   };
 
+  // Calculate default center coordinates
+  const defaultLat = route?.waypoints?.[0]?.lat || currentLocation?.latitude || 48.8566;
+  const defaultLng = route?.waypoints?.[0]?.lng || currentLocation?.longitude || 2.3522;
+  const driverLatValue = currentLocation?.latitude || defaultLat;
+  const driverLngValue = currentLocation?.longitude || defaultLng;
+
   // OpenStreetMap HTML
   const mapHtml = `
     <!DOCTYPE html>
@@ -213,8 +219,8 @@ export default function Navigation() {
     <body>
       <div id="map"></div>
       <script>
-        const centerLat = ${route?.waypoints?.[0]?.lat || currentLocation?.latitude || 48.8566};
-        const centerLng = ${route?.waypoints?.[0]?.lng || currentLocation?.longitude || 2.3522};
+        const centerLat = ${defaultLat};
+        const centerLng = ${defaultLng};
         
         const map = L.map('map').setView([centerLat, centerLng], 16);
         
@@ -275,8 +281,8 @@ export default function Navigation() {
 
         // Driver marker
         let driverMarker = null;
-        const driverLat = ${currentLocation?.latitude || centerLat};
-        const driverLng = ${currentLocation?.longitude || centerLng};
+        const driverLat = ${driverLatValue};
+        const driverLng = ${driverLngValue};
         
         driverMarker = L.marker([driverLat, driverLng], {
           icon: L.divIcon({
