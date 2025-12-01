@@ -624,17 +624,17 @@ async def get_active_drivers():
 async def get_location_history(delivery_id: str):
     """Get location history for a delivery"""
     history = await db.location_history.find({"delivery_id": delivery_id}).sort("timestamp", 1).to_list(1000)
-    return history
+    return [serialize_doc(h) for h in history]
 
 # ============== ALERTS ==============
 
-@api_router.get("/alerts", response_model=List[dict])
+@api_router.get("/alerts")
 async def get_alerts(resolved: Optional[bool] = None):
     query = {}
     if resolved is not None:
         query['is_resolved'] = resolved
     alerts = await db.alerts.find(query).sort("created_at", -1).to_list(100)
-    return alerts
+    return [serialize_doc(a) for a in alerts]
 
 @api_router.post("/alerts/emergency")
 async def create_emergency_alert(data: dict):
