@@ -326,13 +326,26 @@ export default function AdminDashboard() {
       {/* Content */}
       {activeTab === 'map' && (
         <View style={styles.mapContainer}>
-          <WebView
-            ref={webViewRef}
-            source={{ html: mapHtml }}
-            style={styles.map}
-            javaScriptEnabled={true}
-            domStorageEnabled={true}
-          />
+          {Platform.OS === 'web' ? (
+            <iframe
+              srcDoc={mapHtml}
+              style={{ flex: 1, border: 'none', width: '100%', height: '100%' } as any}
+              title="Admin Map"
+            />
+          ) : WebView ? (
+            <WebView
+              ref={webViewRef}
+              source={{ html: mapHtml }}
+              style={styles.map}
+              javaScriptEnabled={true}
+              domStorageEnabled={true}
+            />
+          ) : (
+            <View style={[styles.map, { justifyContent: 'center', alignItems: 'center' }]}>
+              <Ionicons name="map" size={64} color="#00d4ff" />
+              <Text style={{ color: '#fff', marginTop: 16 }}>Carte non disponible</Text>
+            </View>
+          )}
           
           {/* Active Drivers List */}
           {activeDrivers.length > 0 && (
