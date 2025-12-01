@@ -374,7 +374,7 @@ async def login(credentials: UserLogin):
 
 # ============== ROUTES MANAGEMENT ==============
 
-@api_router.get("/routes", response_model=List[dict])
+@api_router.get("/routes")
 async def get_routes():
     routes = await db.routes.find({"is_active": True}).to_list(100)
     if not routes:
@@ -382,8 +382,8 @@ async def get_routes():
         for route in DEMO_ROUTES:
             route['created_at'] = datetime.utcnow()
             await db.routes.insert_one(route)
-        routes = DEMO_ROUTES
-    return routes
+        return DEMO_ROUTES
+    return [serialize_doc(r) for r in routes]
 
 @api_router.get("/routes/{route_id}")
 async def get_route(route_id: str):
@@ -394,7 +394,7 @@ async def get_route(route_id: str):
             if r['id'] == route_id:
                 return r
         raise HTTPException(status_code=404, detail="Itinéraire non trouvé")
-    return route
+    return serialize_doc(route)
 
 @api_router.post("/routes", response_model=dict)
 async def create_route(route: RouteCreate):
