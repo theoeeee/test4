@@ -9,13 +9,19 @@ import {
   RefreshControl,
   Modal,
   Alert,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { WebView } from 'react-native-webview';
 import { useAuth } from '../../src/context/AuthContext';
 import api from '../../src/services/api';
+
+// Conditionally import WebView only for native platforms
+let WebView: any = null;
+if (Platform.OS !== 'web') {
+  WebView = require('react-native-webview').WebView;
+}
 
 const { width, height } = Dimensions.get('window');
 
