@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter, useSegments } from 'expo-router';
 import { api } from '../services/api';
 
 interface User {
@@ -23,9 +24,37 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+function useProtectedRoute(user: User | null, isLoading: boolean) {
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    const inAuthGroup = segments[0] === 'auth';
+    const inAdminGroup = segments[0] === 'admin';
+    const inDriverGroup = segments[0] === 'driver';
+    const isIndex = segments.length === 0 || segments[0] === undefined;
+
+    if (user) {
+      // User is logged in
+      if (inAuthGroup || isIndex) {
+        // Redirect to appropriate dashboard based on role
+        if (user.role === 'admin' || user.role === 'supervisor') {
+          router.replace('/admin/dashboard');
+        } else {
+          router.replace('/driver/home');
+        }
+      }
+    }
+  }, [user, segments, isLoading]);
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  useProtectedRoute(user, isLoading);
 
   useEffect(() => {
     loadUser();
