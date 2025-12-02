@@ -20,9 +20,14 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 # MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ.get('DB_NAME', 'delivery_tracker')]
+mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+client = None
+db = None
+try:
+    client = AsyncIOMotorClient(mongo_url, serverSelectionTimeoutMS=5000)
+    db = client[os.environ.get('DB_NAME', 'delivery_tracker')]
+except Exception as e:
+    logger.warning(f"MongoDB connection failed: {e}. Server will start but database operations may fail.")
 
 # Helper to convert MongoDB documents
 def serialize_doc(doc):
@@ -343,6 +348,9 @@ def check_deviation(current_lat: float, current_lng: float, route_waypoints: lis
 
 @api_router.post("/auth/register", response_model=dict)
 async def register(user: UserCreate):
+    if db is None:
+        raise HTTPException(status_code=503, detail="Base de données non disponible. Vérifiez votre connexion MongoDB.")
+    
     # Check if email exists
     existing = await db.users.find_one({"email": user.email})
     if existing:
@@ -354,23 +362,32 @@ async def register(user: UserCreate):
 
 @api_router.post("/auth/login", response_model=dict)
 async def login(credentials: UserLogin):
-    user = await db.users.find_one({"email": credentials.email})
-    if not user or user['password'] != credentials.password:
-        raise HTTPException(status_code=401, detail="Identifiants invalides")
+    if db is None:
+        raise HTTPException(status_code=503, detail="Base de données non disponible. Vérifiez votre connexion MongoDB.")
     
-    return {
-        "success": True,
-        "user": {
-            "id": user['id'],
-            "email": user['email'],
-            "name": user['name'],
-            "role": user['role'],
-            "phone": user.get('phone'),
-            "company": user.get('company'),
-            "vehicle_type": user.get('vehicle_type'),
-            "license_plate": user.get('license_plate')
+    try:
+        user = await db.users.find_one({"email": credentials.email})
+        if not user or user.get('password') != credentials.password:
+            raise HTTPException(status_code=401, detail="Identifiants invalides")
+        
+        return {
+            "success": True,
+            "user": {
+                "id": user.get('id', str(user.get('_id', ''))),
+                "email": user['email'],
+                "name": user['name'],
+                "role": user['role'],
+                "phone": user.get('phone'),
+                "company": user.get('company'),
+                "vehicle_type": user.get('vehicle_type'),
+                "license_plate": user.get('license_plate')
+            }
         }
-    }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Login error: {e}")
+        raise HTTPException(status_code=500, detail="Erreur lors de la connexion")
 
 # ============== ROUTES MANAGEMENT ==============
 
@@ -826,31 +843,50 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup():
+    if db is None:
+        logger.error("MongoDB not connected. Please check your MONGO_URL in .env file")
+        logger.error("You can use MongoDB Atlas (free): https://www.mongodb.com/cloud/atlas")
+        return
+    
+    try:
+        # Test MongoDB connection
+        await client.admin.command('ping')
+        logger.info("MongoDB connected successfully")
+    except Exception as e:
+        logger.error(f"MongoDB connection error: {e}")
+        logger.error("Please start MongoDB or configure MongoDB Atlas")
+        return
+    
     # Initialize demo data
-    routes_count = await db.routes.count_documents({})
-    if routes_count == 0:
-        for route in DEMO_ROUTES:
-            route['created_at'] = datetime.utcnow()
-            await db.routes.insert_one(route)
-        logger.info("Demo routes initialized")
-    
-    cameras_count = await db.cameras.count_documents({})
-    if cameras_count == 0:
-        for cam in DEMO_CAMERAS:
-            await db.cameras.insert_one(cam)
-        logger.info("Demo cameras initialized")
-    
-    # Create admin user if not exists
-    admin = await db.users.find_one({"email": "admin@sitetrack.fr"})
-    if not admin:
-        admin_user = User(
-            email="admin@sitetrack.fr",
-            password="admin123",
-            name="Administrateur",
-            role="admin"
-        )
-        await db.users.insert_one(admin_user.dict())
-        logger.info("Admin user created")
+    try:
+        routes_count = await db.routes.count_documents({})
+        if routes_count == 0:
+            for route in DEMO_ROUTES:
+                route['created_at'] = datetime.utcnow()
+                await db.routes.insert_one(route)
+            logger.info("Demo routes initialized")
+        
+        cameras_count = await db.cameras.count_documents({})
+        if cameras_count == 0:
+            for cam in DEMO_CAMERAS:
+                await db.cameras.insert_one(cam)
+            logger.info("Demo cameras initialized")
+        
+        # Create admin user if not exists
+        admin = await db.users.find_one({"email": "admin@sitetrack.fr"})
+        if not admin:
+            admin_user = User(
+                email="admin@sitetrack.fr",
+                password="admin123",
+                name="Administrateur",
+                role="admin"
+            )
+            await db.users.insert_one(admin_user.dict())
+            logger.info("Admin user created: admin@sitetrack.fr / admin123")
+        else:
+            logger.info("Admin user already exists")
+    except Exception as e:
+        logger.error(f"Error initializing demo data: {e}")
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
