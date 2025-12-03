@@ -239,76 +239,384 @@ class Camera(BaseModel):
     stream_url: Optional[str] = None
     is_active: bool = True
 
-# ============== DEMO DATA ==============
+# ============== INFRASTRUCTURES DE VERSAILLES ==============
 
-# Industrial site center (Demo - near Paris)
-SITE_CENTER = {"lat": 48.8566, "lng": 2.3522}
+# Centre de Versailles (Place d'Armes)
+SITE_CENTER = {"lat": 48.8049, "lng": 2.1201}
 
-# Demo routes for the industrial site
+# Routes vers toutes les infrastructures importantes de Versailles
 DEMO_ROUTES = [
+    # Monuments historiques
     {
-        "id": "route-1",
-        "name": "Quai A - Chargement Principal",
-        "description": "Itinéraire vers le quai de chargement principal",
+        "id": "route-chateau",
+        "name": "Château de Versailles",
+        "description": "Itinéraire vers le Château de Versailles - Entrée principale",
         "waypoints": [
-            {"lat": 48.8566, "lng": 2.3522, "name": "Entrée Principale", "order": 1},
-            {"lat": 48.8570, "lng": 2.3530, "name": "Route Principale", "order": 2},
-            {"lat": 48.8575, "lng": 2.3540, "name": "Zone Parking", "order": 3},
+            {"lat": 48.8049, "lng": 2.1201, "name": "Place d'Armes", "order": 1},
+            {"lat": 48.8052, "lng": 2.1203, "name": "Avenue de Paris", "order": 2},
         ],
-        "destination": {"lat": 48.8580, "lng": 2.3550, "name": "Quai A", "type": "loading_dock"},
-        "vehicle_types": ["truck", "van"],
-        "speed_limits": [{"start": 0, "end": 1, "limit": 20}, {"start": 1, "end": 3, "limit": 30}],
-        "danger_zones": [{"lat": 48.8572, "lng": 2.3535, "radius": 50, "description": "Zone piétonne"}],
+        "destination": {"lat": 48.8049, "lng": 2.1201, "name": "Château de Versailles", "type": "monument"},
+        "vehicle_types": ["car", "van"],
+        "speed_limits": [{"start": 0, "end": 2, "limit": 30}],
+        "danger_zones": [{"lat": 48.8052, "lng": 2.1203, "radius": 150, "description": "Zone piétonne - Place d'Armes"}],
         "restricted_zones": [],
-        "estimated_time": 8,
+        "estimated_time": 3,
+        "distance": 0.3,
+        "is_active": True
+    },
+    {
+        "id": "route-grand-trianon",
+        "name": "Grand Trianon",
+        "description": "Itinéraire vers le Grand Trianon",
+        "waypoints": [
+            {"lat": 48.8049, "lng": 2.1201, "name": "Château", "order": 1},
+            {"lat": 48.8080, "lng": 2.1150, "name": "Parc de Versailles", "order": 2},
+            {"lat": 48.8100, "lng": 2.1120, "name": "Allée du Grand Trianon", "order": 3},
+        ],
+        "destination": {"lat": 48.8120, "lng": 2.1100, "name": "Grand Trianon", "type": "monument"},
+        "vehicle_types": ["car", "van"],
+        "speed_limits": [{"start": 0, "end": 3, "limit": 20}],
+        "danger_zones": [{"lat": 48.8090, "lng": 2.1135, "radius": 50, "description": "Zone piétonne - Parc"}],
+        "restricted_zones": [],
+        "estimated_time": 10,
         "distance": 1.2,
         "is_active": True
     },
     {
-        "id": "route-2",
-        "name": "Entrepôt B - Stockage",
-        "description": "Itinéraire vers l'entrepôt de stockage B",
+        "id": "route-petit-trianon",
+        "name": "Petit Trianon",
+        "description": "Itinéraire vers le Petit Trianon",
         "waypoints": [
-            {"lat": 48.8566, "lng": 2.3522, "name": "Entrée Principale", "order": 1},
-            {"lat": 48.8560, "lng": 2.3530, "name": "Voie Sud", "order": 2},
-            {"lat": 48.8555, "lng": 2.3545, "name": "Carrefour Central", "order": 3},
+            {"lat": 48.8049, "lng": 2.1201, "name": "Château", "order": 1},
+            {"lat": 48.8080, "lng": 2.1150, "name": "Parc de Versailles", "order": 2},
+            {"lat": 48.8120, "lng": 2.1100, "name": "Grand Trianon", "order": 3},
+            {"lat": 48.8135, "lng": 2.1090, "name": "Allée du Petit Trianon", "order": 4},
         ],
-        "destination": {"lat": 48.8550, "lng": 2.3560, "name": "Entrepôt B", "type": "warehouse"},
-        "vehicle_types": ["truck", "van", "car"],
-        "speed_limits": [{"start": 0, "end": 3, "limit": 25}],
-        "danger_zones": [{"lat": 48.8558, "lng": 2.3538, "radius": 30, "description": "Zone de manœuvre"}],
+        "destination": {"lat": 48.8150, "lng": 2.1080, "name": "Petit Trianon", "type": "monument"},
+        "vehicle_types": ["car", "van"],
+        "speed_limits": [{"start": 0, "end": 4, "limit": 20}],
+        "danger_zones": [{"lat": 48.8140, "lng": 2.1085, "radius": 50, "description": "Zone piétonne - Parc"}],
         "restricted_zones": [],
-        "estimated_time": 10,
+        "estimated_time": 12,
         "distance": 1.5,
         "is_active": True
     },
     {
-        "id": "route-3",
-        "name": "Zone Technique C",
-        "description": "Itinéraire vers la zone technique",
+        "id": "route-hameau-reine",
+        "name": "Hameau de la Reine",
+        "description": "Itinéraire vers le Hameau de la Reine",
         "waypoints": [
-            {"lat": 48.8566, "lng": 2.3522, "name": "Entrée Principale", "order": 1},
-            {"lat": 48.8570, "lng": 2.3510, "name": "Voie Nord", "order": 2},
-            {"lat": 48.8578, "lng": 2.3500, "name": "Accès Technique", "order": 3},
+            {"lat": 48.8049, "lng": 2.1201, "name": "Château", "order": 1},
+            {"lat": 48.8150, "lng": 2.1080, "name": "Petit Trianon", "order": 2},
         ],
-        "destination": {"lat": 48.8585, "lng": 2.3495, "name": "Zone Technique C", "type": "technical"},
-        "vehicle_types": ["van", "car"],
-        "speed_limits": [{"start": 0, "end": 3, "limit": 15}],
-        "danger_zones": [],
-        "restricted_zones": [{"lat": 48.8582, "lng": 2.3502, "radius": 20, "description": "Zone interdite camions"}],
-        "estimated_time": 12,
-        "distance": 1.8,
+        "destination": {"lat": 48.8160, "lng": 2.1070, "name": "Hameau de la Reine", "type": "monument"},
+        "vehicle_types": ["car", "van"],
+        "speed_limits": [{"start": 0, "end": 2, "limit": 20}],
+        "danger_zones": [{"lat": 48.8155, "lng": 2.1075, "radius": 100, "description": "Zone piétonne - Hameau"}],
+        "restricted_zones": [],
+        "estimated_time": 8,
+        "distance": 1.3,
         "is_active": True
-    }
+    },
+    {
+        "id": "route-orangerie",
+        "name": "Orangerie de Versailles",
+        "description": "Itinéraire vers l'Orangerie",
+        "waypoints": [
+            {"lat": 48.8049, "lng": 2.1201, "name": "Place d'Armes", "order": 1},
+            {"lat": 48.8035, "lng": 2.1180, "name": "Avenue de Sceaux", "order": 2},
+        ],
+        "destination": {"lat": 48.8020, "lng": 2.1160, "name": "Orangerie de Versailles", "type": "monument"},
+        "vehicle_types": ["car", "van"],
+        "speed_limits": [{"start": 0, "end": 2, "limit": 30}],
+        "danger_zones": [],
+        "restricted_zones": [],
+        "estimated_time": 5,
+        "distance": 0.5,
+        "is_active": True
+    },
+    # Gares
+    {
+        "id": "route-gare-chantiers",
+        "name": "Gare de Versailles-Chantiers",
+        "description": "Itinéraire vers la gare principale de Versailles-Chantiers",
+        "waypoints": [
+            {"lat": 48.8049, "lng": 2.1201, "name": "Centre-ville", "order": 1},
+            {"lat": 48.8035, "lng": 2.1300, "name": "Avenue de Sceaux", "order": 2},
+            {"lat": 48.8020, "lng": 2.1350, "name": "Place de la Gare", "order": 3},
+        ],
+        "destination": {"lat": 48.8010, "lng": 2.1370, "name": "Gare de Versailles-Chantiers", "type": "station"},
+        "vehicle_types": ["car", "van", "truck"],
+        "speed_limits": [{"start": 0, "end": 3, "limit": 50}],
+        "danger_zones": [],
+        "restricted_zones": [],
+        "estimated_time": 8,
+        "distance": 1.5,
+        "is_active": True
+    },
+    {
+        "id": "route-gare-rive-droite",
+        "name": "Gare de Versailles-Rive Droite",
+        "description": "Itinéraire vers la gare Rive Droite",
+        "waypoints": [
+            {"lat": 48.8049, "lng": 2.1201, "name": "Centre-ville", "order": 1},
+            {"lat": 48.8065, "lng": 2.1230, "name": "Avenue de l'Europe", "order": 2},
+        ],
+        "destination": {"lat": 48.8080, "lng": 2.1250, "name": "Gare de Versailles-Rive Droite", "type": "station"},
+        "vehicle_types": ["car", "van"],
+        "speed_limits": [{"start": 0, "end": 2, "limit": 50}],
+        "danger_zones": [],
+        "restricted_zones": [],
+        "estimated_time": 6,
+        "distance": 0.8,
+        "is_active": True
+    },
+    {
+        "id": "route-gare-rive-gauche",
+        "name": "Gare de Versailles-Rive Gauche",
+        "description": "Itinéraire vers la gare Rive Gauche",
+        "waypoints": [
+            {"lat": 48.8049, "lng": 2.1201, "name": "Centre-ville", "order": 1},
+            {"lat": 48.8020, "lng": 2.1280, "name": "Avenue de Paris", "order": 2},
+        ],
+        "destination": {"lat": 48.8000, "lng": 2.1300, "name": "Gare de Versailles-Rive Gauche", "type": "station"},
+        "vehicle_types": ["car", "van"],
+        "speed_limits": [{"start": 0, "end": 2, "limit": 50}],
+        "danger_zones": [],
+        "restricted_zones": [],
+        "estimated_time": 7,
+        "distance": 1.0,
+        "is_active": True
+    },
+    # Édifices publics
+    {
+        "id": "route-hotel-ville",
+        "name": "Hôtel de Ville de Versailles",
+        "description": "Itinéraire vers l'Hôtel de Ville",
+        "waypoints": [
+            {"lat": 48.8049, "lng": 2.1201, "name": "Place d'Armes", "order": 1},
+            {"lat": 48.8055, "lng": 2.1180, "name": "Rue de la Paroisse", "order": 2},
+        ],
+        "destination": {"lat": 48.8065, "lng": 2.1150, "name": "Hôtel de Ville", "type": "public"},
+        "vehicle_types": ["car", "van"],
+        "speed_limits": [{"start": 0, "end": 2, "limit": 30}],
+        "danger_zones": [],
+        "restricted_zones": [],
+        "estimated_time": 5,
+        "distance": 0.6,
+        "is_active": True
+    },
+    {
+        "id": "route-cathedrale",
+        "name": "Cathédrale Saint-Louis",
+        "description": "Itinéraire vers la Cathédrale Saint-Louis",
+        "waypoints": [
+            {"lat": 48.8049, "lng": 2.1201, "name": "Centre-ville", "order": 1},
+            {"lat": 48.8055, "lng": 2.1220, "name": "Rue de la Cathédrale", "order": 2},
+        ],
+        "destination": {"lat": 48.8060, "lng": 2.1230, "name": "Cathédrale Saint-Louis", "type": "monument"},
+        "vehicle_types": ["car", "van"],
+        "speed_limits": [{"start": 0, "end": 2, "limit": 30}],
+        "danger_zones": [],
+        "restricted_zones": [],
+        "estimated_time": 4,
+        "distance": 0.4,
+        "is_active": True
+    },
+    {
+        "id": "route-eglise-notre-dame",
+        "name": "Église Notre-Dame de Versailles",
+        "description": "Itinéraire vers l'Église Notre-Dame",
+        "waypoints": [
+            {"lat": 48.8049, "lng": 2.1201, "name": "Centre-ville", "order": 1},
+            {"lat": 48.8050, "lng": 2.1215, "name": "Rue de la Paroisse", "order": 2},
+        ],
+        "destination": {"lat": 48.8052, "lng": 2.1225, "name": "Église Notre-Dame", "type": "monument"},
+        "vehicle_types": ["car", "van"],
+        "speed_limits": [{"start": 0, "end": 2, "limit": 30}],
+        "danger_zones": [],
+        "restricted_zones": [],
+        "estimated_time": 3,
+        "distance": 0.3,
+        "is_active": True
+    },
+    # Musées et culture
+    {
+        "id": "route-musee-lambinet",
+        "name": "Musée Lambinet",
+        "description": "Itinéraire vers le Musée Lambinet",
+        "waypoints": [
+            {"lat": 48.8049, "lng": 2.1201, "name": "Place d'Armes", "order": 1},
+        ],
+        "destination": {"lat": 48.8055, "lng": 2.1210, "name": "Musée Lambinet", "type": "museum"},
+        "vehicle_types": ["car", "van"],
+        "speed_limits": [{"start": 0, "end": 1, "limit": 30}],
+        "danger_zones": [],
+        "restricted_zones": [],
+        "estimated_time": 2,
+        "distance": 0.2,
+        "is_active": True
+    },
+    {
+        "id": "route-musee-histoire-france",
+        "name": "Musée de l'Histoire de France",
+        "description": "Itinéraire vers le Musée de l'Histoire de France",
+        "waypoints": [
+            {"lat": 48.8049, "lng": 2.1201, "name": "Place d'Armes", "order": 1},
+        ],
+        "destination": {"lat": 48.8050, "lng": 2.1205, "name": "Musée de l'Histoire de France", "type": "museum"},
+        "vehicle_types": ["car", "van"],
+        "speed_limits": [{"start": 0, "end": 1, "limit": 30}],
+        "danger_zones": [{"lat": 48.8051, "lng": 2.1203, "radius": 50, "description": "Zone piétonne"}],
+        "restricted_zones": [],
+        "estimated_time": 2,
+        "distance": 0.1,
+        "is_active": True
+    },
+    # Parcs et jardins
+    {
+        "id": "route-potager-roi",
+        "name": "Potager du Roi",
+        "description": "Itinéraire vers le Potager du Roi",
+        "waypoints": [
+            {"lat": 48.8049, "lng": 2.1201, "name": "Centre-ville", "order": 1},
+            {"lat": 48.8025, "lng": 2.1175, "name": "Avenue de Paris", "order": 2},
+        ],
+        "destination": {"lat": 48.8000, "lng": 2.1150, "name": "Potager du Roi", "type": "garden"},
+        "vehicle_types": ["car", "van"],
+        "speed_limits": [{"start": 0, "end": 2, "limit": 30}],
+        "danger_zones": [],
+        "restricted_zones": [],
+        "estimated_time": 6,
+        "distance": 0.7,
+        "is_active": True
+    },
+    {
+        "id": "route-parc-balbi",
+        "name": "Parc Balbi",
+        "description": "Itinéraire vers le Parc Balbi",
+        "waypoints": [
+            {"lat": 48.8049, "lng": 2.1201, "name": "Centre-ville", "order": 1},
+            {"lat": 48.8060, "lng": 2.1180, "name": "Rue de la Paroisse", "order": 2},
+        ],
+        "destination": {"lat": 48.8070, "lng": 2.1160, "name": "Parc Balbi", "type": "park"},
+        "vehicle_types": ["car", "van"],
+        "speed_limits": [{"start": 0, "end": 2, "limit": 30}],
+        "danger_zones": [],
+        "restricted_zones": [],
+        "estimated_time": 5,
+        "distance": 0.5,
+        "is_active": True
+    },
+    # Établissements de santé
+    {
+        "id": "route-hopital-andre-mignot",
+        "name": "Hôpital André Mignot",
+        "description": "Itinéraire vers l'Hôpital André Mignot",
+        "waypoints": [
+            {"lat": 48.8049, "lng": 2.1201, "name": "Centre-ville", "order": 1},
+            {"lat": 48.8030, "lng": 2.1250, "name": "Avenue de Paris", "order": 2},
+        ],
+        "destination": {"lat": 48.8015, "lng": 2.1280, "name": "Hôpital André Mignot", "type": "hospital"},
+        "vehicle_types": ["car", "van", "ambulance"],
+        "speed_limits": [{"start": 0, "end": 2, "limit": 50}],
+        "danger_zones": [],
+        "restricted_zones": [],
+        "estimated_time": 7,
+        "distance": 1.0,
+        "is_active": True
+    },
+    # Établissements scolaires importants
+    {
+        "id": "route-lycee-hoche",
+        "name": "Lycée Hoche",
+        "description": "Itinéraire vers le Lycée Hoche",
+        "waypoints": [
+            {"lat": 48.8049, "lng": 2.1201, "name": "Centre-ville", "order": 1},
+            {"lat": 48.8060, "lng": 2.1220, "name": "Avenue de l'Europe", "order": 2},
+        ],
+        "destination": {"lat": 48.8075, "lng": 2.1240, "name": "Lycée Hoche", "type": "school"},
+        "vehicle_types": ["car", "van"],
+        "speed_limits": [{"start": 0, "end": 2, "limit": 30}],
+        "danger_zones": [{"lat": 48.8075, "lng": 2.1240, "radius": 50, "description": "Zone scolaire"}],
+        "restricted_zones": [],
+        "estimated_time": 6,
+        "distance": 0.7,
+        "is_active": True
+    },
+    # Équipements sportifs
+    {
+        "id": "route-stade-montbauron",
+        "name": "Stade de Montbauron",
+        "description": "Itinéraire vers le Stade de Montbauron",
+        "waypoints": [
+            {"lat": 48.8049, "lng": 2.1201, "name": "Centre-ville", "order": 1},
+            {"lat": 48.8035, "lng": 2.1220, "name": "Avenue de Sceaux", "order": 2},
+        ],
+        "destination": {"lat": 48.8020, "lng": 2.1250, "name": "Stade de Montbauron", "type": "sport"},
+        "vehicle_types": ["car", "van", "truck"],
+        "speed_limits": [{"start": 0, "end": 2, "limit": 50}],
+        "danger_zones": [],
+        "restricted_zones": [],
+        "estimated_time": 6,
+        "distance": 0.8,
+        "is_active": True
+    },
+    # Commerces et services
+    {
+        "id": "route-marche-notre-dame",
+        "name": "Marché Notre-Dame",
+        "description": "Itinéraire vers le Marché Notre-Dame",
+        "waypoints": [
+            {"lat": 48.8049, "lng": 2.1201, "name": "Centre-ville", "order": 1},
+            {"lat": 48.8052, "lng": 2.1215, "name": "Rue de la Paroisse", "order": 2},
+        ],
+        "destination": {"lat": 48.8055, "lng": 2.1220, "name": "Marché Notre-Dame", "type": "market"},
+        "vehicle_types": ["car", "van", "truck"],
+        "speed_limits": [{"start": 0, "end": 2, "limit": 30}],
+        "danger_zones": [],
+        "restricted_zones": [],
+        "estimated_time": 3,
+        "distance": 0.3,
+        "is_active": True
+    },
+    {
+        "id": "route-prefecture",
+        "name": "Préfecture des Yvelines",
+        "description": "Itinéraire vers la Préfecture",
+        "waypoints": [
+            {"lat": 48.8049, "lng": 2.1201, "name": "Centre-ville", "order": 1},
+            {"lat": 48.8055, "lng": 2.1180, "name": "Rue de la Paroisse", "order": 2},
+        ],
+        "destination": {"lat": 48.8060, "lng": 2.1165, "name": "Préfecture des Yvelines", "type": "public"},
+        "vehicle_types": ["car", "van"],
+        "speed_limits": [{"start": 0, "end": 2, "limit": 30}],
+        "danger_zones": [],
+        "restricted_zones": [],
+        "estimated_time": 5,
+        "distance": 0.5,
+        "is_active": True
+    },
 ]
 
-# Demo cameras
+# Caméras de surveillance pour toutes les infrastructures importantes
 DEMO_CAMERAS = [
-    {"id": "cam-1", "name": "Caméra Entrée", "location": {"lat": 48.8566, "lng": 2.3522}, "zone": "Entrée", "is_active": True},
-    {"id": "cam-2", "name": "Caméra Quai A", "location": {"lat": 48.8580, "lng": 2.3550}, "zone": "Quai A", "is_active": True},
-    {"id": "cam-3", "name": "Caméra Entrepôt B", "location": {"lat": 48.8550, "lng": 2.3560}, "zone": "Entrepôt B", "is_active": True},
-    {"id": "cam-4", "name": "Caméra Zone Technique", "location": {"lat": 48.8585, "lng": 2.3495}, "zone": "Zone Technique", "is_active": True},
-    {"id": "cam-5", "name": "Caméra Parking", "location": {"lat": 48.8575, "lng": 2.3540}, "zone": "Parking", "is_active": True},
+    {"id": "cam-chateau", "name": "Caméra Château - Place d'Armes", "location": {"lat": 48.8049, "lng": 2.1201}, "zone": "Château", "is_active": True},
+    {"id": "cam-grand-trianon", "name": "Caméra Grand Trianon", "location": {"lat": 48.8120, "lng": 2.1100}, "zone": "Grand Trianon", "is_active": True},
+    {"id": "cam-petit-trianon", "name": "Caméra Petit Trianon", "location": {"lat": 48.8150, "lng": 2.1080}, "zone": "Petit Trianon", "is_active": True},
+    {"id": "cam-hameau", "name": "Caméra Hameau de la Reine", "location": {"lat": 48.8160, "lng": 2.1070}, "zone": "Hameau", "is_active": True},
+    {"id": "cam-gare-chantiers", "name": "Caméra Gare Chantiers", "location": {"lat": 48.8010, "lng": 2.1370}, "zone": "Gare", "is_active": True},
+    {"id": "cam-gare-rive-droite", "name": "Caméra Gare Rive Droite", "location": {"lat": 48.8080, "lng": 2.1250}, "zone": "Gare", "is_active": True},
+    {"id": "cam-gare-rive-gauche", "name": "Caméra Gare Rive Gauche", "location": {"lat": 48.8000, "lng": 2.1300}, "zone": "Gare", "is_active": True},
+    {"id": "cam-hotel-ville", "name": "Caméra Hôtel de Ville", "location": {"lat": 48.8065, "lng": 2.1150}, "zone": "Hôtel de Ville", "is_active": True},
+    {"id": "cam-cathedrale", "name": "Caméra Cathédrale", "location": {"lat": 48.8060, "lng": 2.1230}, "zone": "Cathédrale", "is_active": True},
+    {"id": "cam-eglise-notre-dame", "name": "Caméra Église Notre-Dame", "location": {"lat": 48.8052, "lng": 2.1225}, "zone": "Église", "is_active": True},
+    {"id": "cam-musee-lambinet", "name": "Caméra Musée Lambinet", "location": {"lat": 48.8055, "lng": 2.1210}, "zone": "Musée", "is_active": True},
+    {"id": "cam-potager", "name": "Caméra Potager du Roi", "location": {"lat": 48.8000, "lng": 2.1150}, "zone": "Potager", "is_active": True},
+    {"id": "cam-parc-balbi", "name": "Caméra Parc Balbi", "location": {"lat": 48.8070, "lng": 2.1160}, "zone": "Parc", "is_active": True},
+    {"id": "cam-hopital", "name": "Caméra Hôpital André Mignot", "location": {"lat": 48.8015, "lng": 2.1280}, "zone": "Hôpital", "is_active": True},
+    {"id": "cam-stade", "name": "Caméra Stade Montbauron", "location": {"lat": 48.8020, "lng": 2.1250}, "zone": "Stade", "is_active": True},
+    {"id": "cam-marche", "name": "Caméra Marché Notre-Dame", "location": {"lat": 48.8055, "lng": 2.1220}, "zone": "Marché", "is_active": True},
 ]
 
 # In-memory active drivers store (for real-time tracking)
@@ -366,9 +674,18 @@ async def login(credentials: UserLogin):
         raise HTTPException(status_code=503, detail="Base de données non disponible. Vérifiez votre connexion MongoDB.")
     
     try:
+        logger.info(f"Tentative de connexion pour: {credentials.email}")
         user = await db.users.find_one({"email": credentials.email})
-        if not user or user.get('password') != credentials.password:
+        
+        if not user:
+            logger.warning(f"Utilisateur non trouvé: {credentials.email}")
             raise HTTPException(status_code=401, detail="Identifiants invalides")
+        
+        if user.get('password') != credentials.password:
+            logger.warning(f"Mot de passe incorrect pour: {credentials.email}")
+            raise HTTPException(status_code=401, detail="Identifiants invalides")
+        
+        logger.info(f"Connexion réussie pour: {credentials.email} (rôle: {user.get('role')})")
         
         return {
             "success": True,
@@ -717,28 +1034,73 @@ async def get_nearest_camera(lat: float, lng: float):
 async def get_site_info():
     """Get industrial site information"""
     return {
-        "name": "Site Industriel Demo",
+        "name": "Ville de Versailles",
         "center": SITE_CENTER,
         "bounds": {
-            "north": SITE_CENTER['lat'] + 0.005,
-            "south": SITE_CENTER['lat'] - 0.005,
-            "east": SITE_CENTER['lng'] + 0.008,
-            "west": SITE_CENTER['lng'] - 0.008
+            "north": 48.8200,
+            "south": 48.7900,
+            "east": 2.1500,
+            "west": 2.1000
         },
         "buildings": [
-            {"id": "b1", "name": "Bâtiment Principal", "type": "office", "lat": 48.8568, "lng": 2.3525},
-            {"id": "b2", "name": "Entrepôt A", "type": "warehouse", "lat": 48.8575, "lng": 2.3545},
-            {"id": "b3", "name": "Entrepôt B", "type": "warehouse", "lat": 48.8550, "lng": 2.3560},
-            {"id": "b4", "name": "Zone Technique", "type": "technical", "lat": 48.8585, "lng": 2.3495},
-            {"id": "b5", "name": "Quai A", "type": "loading_dock", "lat": 48.8580, "lng": 2.3550},
+            # Monuments historiques
+            {"id": "b1", "name": "Château de Versailles", "type": "monument", "lat": 48.8049, "lng": 2.1201},
+            {"id": "b2", "name": "Grand Trianon", "type": "monument", "lat": 48.8120, "lng": 2.1100},
+            {"id": "b3", "name": "Petit Trianon", "type": "monument", "lat": 48.8150, "lng": 2.1080},
+            {"id": "b4", "name": "Hameau de la Reine", "type": "monument", "lat": 48.8160, "lng": 2.1070},
+            {"id": "b5", "name": "Orangerie de Versailles", "type": "monument", "lat": 48.8020, "lng": 2.1160},
+            {"id": "b6", "name": "Opéra Royal", "type": "monument", "lat": 48.8050, "lng": 2.1205},
+            {"id": "b7", "name": "Grande Écurie", "type": "monument", "lat": 48.8055, "lng": 2.1200},
+            {"id": "b8", "name": "Petite Écurie", "type": "monument", "lat": 48.8050, "lng": 2.1208},
+            # Édifices religieux
+            {"id": "b9", "name": "Cathédrale Saint-Louis", "type": "monument", "lat": 48.8060, "lng": 2.1230},
+            {"id": "b10", "name": "Église Notre-Dame de Versailles", "type": "monument", "lat": 48.8052, "lng": 2.1225},
+            # Gares
+            {"id": "b11", "name": "Gare de Versailles-Chantiers", "type": "station", "lat": 48.8010, "lng": 2.1370},
+            {"id": "b12", "name": "Gare de Versailles-Rive Droite", "type": "station", "lat": 48.8080, "lng": 2.1250},
+            {"id": "b13", "name": "Gare de Versailles-Rive Gauche", "type": "station", "lat": 48.8000, "lng": 2.1300},
+            # Édifices publics
+            {"id": "b14", "name": "Hôtel de Ville de Versailles", "type": "public", "lat": 48.8065, "lng": 2.1150},
+            {"id": "b15", "name": "Préfecture des Yvelines", "type": "public", "lat": 48.8060, "lng": 2.1165},
+            # Musées
+            {"id": "b16", "name": "Musée Lambinet", "type": "museum", "lat": 48.8055, "lng": 2.1210},
+            {"id": "b17", "name": "Musée de l'Histoire de France", "type": "museum", "lat": 48.8050, "lng": 2.1205},
+            # Parcs et jardins
+            {"id": "b18", "name": "Potager du Roi", "type": "garden", "lat": 48.8000, "lng": 2.1150},
+            {"id": "b19", "name": "Parc Balbi", "type": "park", "lat": 48.8070, "lng": 2.1160},
+            {"id": "b20", "name": "Parc de Versailles", "type": "park", "lat": 48.8080, "lng": 2.1150},
+            # Établissements de santé
+            {"id": "b21", "name": "Hôpital André Mignot", "type": "hospital", "lat": 48.8015, "lng": 2.1280},
+            # Établissements scolaires
+            {"id": "b22", "name": "Lycée Hoche", "type": "school", "lat": 48.8075, "lng": 2.1240},
+            {"id": "b23", "name": "Lycée Jules Ferry", "type": "school", "lat": 48.8030, "lng": 2.1220},
+            # Équipements sportifs
+            {"id": "b24", "name": "Stade de Montbauron", "type": "sport", "lat": 48.8020, "lng": 2.1250},
+            {"id": "b25", "name": "Piscine de Montbauron", "type": "sport", "lat": 48.8025, "lng": 2.1255},
+            # Commerces et services
+            {"id": "b26", "name": "Marché Notre-Dame", "type": "market", "lat": 48.8055, "lng": 2.1220},
+            {"id": "b27", "name": "Théâtre Montansier", "type": "culture", "lat": 48.8058, "lng": 2.1215},
+            {"id": "b28", "name": "Bibliothèque municipale", "type": "public", "lat": 48.8062, "lng": 2.1155},
         ],
         "entrances": [
-            {"id": "e1", "name": "Entrée Principale", "lat": 48.8566, "lng": 2.3522, "type": "main"},
-            {"id": "e2", "name": "Entrée Nord", "lat": 48.8580, "lng": 2.3510, "type": "secondary"},
+            {"id": "e1", "name": "Place d'Armes - Château", "lat": 48.8049, "lng": 2.1201, "type": "main"},
+            {"id": "e2", "name": "Entrée Parc - Grille d'Honneur", "lat": 48.8060, "lng": 2.1200, "type": "secondary"},
+            {"id": "e3", "name": "Entrée Gare Chantiers", "lat": 48.8010, "lng": 2.1370, "type": "main"},
+            {"id": "e4", "name": "Entrée Gare Rive Droite", "lat": 48.8080, "lng": 2.1250, "type": "main"},
+            {"id": "e5", "name": "Entrée Gare Rive Gauche", "lat": 48.8000, "lng": 2.1300, "type": "main"},
+            {"id": "e6", "name": "Entrée Hôtel de Ville", "lat": 48.8065, "lng": 2.1150, "type": "public"},
+            {"id": "e7", "name": "Entrée Hôpital", "lat": 48.8015, "lng": 2.1280, "type": "public"},
         ],
         "parking": [
-            {"id": "p1", "name": "Parking Poids Lourds", "lat": 48.8575, "lng": 2.3540, "capacity": 20},
-            {"id": "p2", "name": "Parking VL", "lat": 48.8562, "lng": 2.3535, "capacity": 50},
+            {"id": "p1", "name": "Parking Château - Place d'Armes", "lat": 48.8045, "lng": 2.1205, "capacity": 200},
+            {"id": "p2", "name": "Parking Gare Chantiers", "lat": 48.8015, "lng": 2.1375, "capacity": 150},
+            {"id": "p3", "name": "Parking Hôtel de Ville", "lat": 48.8060, "lng": 2.1155, "capacity": 80},
+            {"id": "p4", "name": "Parking Grand Trianon", "lat": 48.8115, "lng": 2.1105, "capacity": 50},
+            {"id": "p5", "name": "Parking Gare Rive Droite", "lat": 48.8085, "lng": 2.1255, "capacity": 100},
+            {"id": "p6", "name": "Parking Gare Rive Gauche", "lat": 48.8005, "lng": 2.1305, "capacity": 120},
+            {"id": "p7", "name": "Parking Hôpital", "lat": 48.8020, "lng": 2.1285, "capacity": 200},
+            {"id": "p8", "name": "Parking Marché Notre-Dame", "lat": 48.8050, "lng": 2.1225, "capacity": 60},
+            {"id": "p9", "name": "Parking Stade Montbauron", "lat": 48.8025, "lng": 2.1255, "capacity": 80},
         ]
     }
 
