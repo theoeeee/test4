@@ -1,7 +1,13 @@
 import axios from 'axios';
 import Constants from 'expo-constants';
 
-const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+// Force l'URL du backend à localhost pour le développement local
+// Si vous testez sur un appareil physique, changez cette URL par l'IP de votre machine
+const BACKEND_URL = __DEV__ 
+  ? 'http://localhost:8000' 
+  : (process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8000');
+
+console.log('🔗 Backend URL:', BACKEND_URL);
 
 export const api = axios.create({
   baseURL: `${BACKEND_URL}/api`,
