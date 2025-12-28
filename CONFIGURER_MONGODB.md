@@ -91,3 +91,7 @@ Si vous voyez des erreurs de connexion :
 3. Vérifiez les logs du backend pour voir les erreurs exactes
 4. Pour MongoDB Atlas, assurez-vous que votre IP est autorisée dans "Network Access"
 
+
+
+
+
