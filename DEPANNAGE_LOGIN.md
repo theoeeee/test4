@@ -139,3 +139,7 @@ curl -X POST http://localhost:8000/api/auth/register \
 3. **Testez avec curl** pour isoler le problème frontend/backend
 4. **Vérifiez votre fichier `.env`** dans `backend/` : La connexion MongoDB est-elle correcte ?
 
+
+
+
+

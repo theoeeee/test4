@@ -4,7 +4,9 @@
 
 ### 1. Tester le backend
 ```bash
-curl http://localhost:8000/api/health
+
+
+
 ```
 Résultat attendu : `{"status":"healthy"}`
 
@@ -65,4 +67,8 @@ curl -X POST http://localhost:8000/api/auth/register \
     "role": "driver"
   }'
 ```
+
+
+
+
 

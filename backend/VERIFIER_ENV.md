@@ -60,3 +60,7 @@ python test_mongodb.py
 
 Si vous voyez "✅ Connexion MongoDB réussie !", c'est bon ! 🎉
 
+
+
+
+

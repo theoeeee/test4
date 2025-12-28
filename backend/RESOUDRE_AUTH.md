@@ -67,3 +67,7 @@ Ensuite, redémarrez le serveur backend pour créer l'utilisateur admin :
 uvicorn server:app --reload --port 8000
 ```
 
+
+
+
+
